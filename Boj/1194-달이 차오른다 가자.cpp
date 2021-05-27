@@ -1,5 +1,4 @@
-/*1194 달이 차오른다 가자
-https://www.acmicpc.net/problem/1194*/
+//https://www.acmicpc.net/problem/1194
 
 #include<iostream>
 #include<queue>
