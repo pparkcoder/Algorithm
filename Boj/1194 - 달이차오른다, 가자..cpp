@@ -1,4 +1,4 @@
-/*https://www.acmicpc.net/problem/1194 - ´ÞÀÌ Â÷¿À¸¥´Ù, °¡ÀÚ.*/
+/*https://www.acmicpc.net/problem/1194 - Â´ÃžÃ€ÃŒ Ã‚Ã·Â¿Ã€Â¸Â¥Â´Ã™, Â°Â¡Ã€Ãš.*/
 
 #include<iostream>
 #include<queue>
