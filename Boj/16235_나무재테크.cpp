@@ -1,5 +1,5 @@
 //https://www.acmicpc.net/problem/16235
-//TLE -> vector의 초기화(clear)와 data를 옮겨주는 과정(Line 53) 때문
+//TLE -> vector의 초기화(clear)와 data를 옮겨주는 과정(Line 55) 때문
 //Solving -> deque를 이용하여 초기화하는 과정을 없애주고, data를 옮겨주는 과정을 pop과 push를 이용하여 구현
 // sort는 한번만 가능 -> 처음에 나이순 정렬 -> 다음부터 나이순으로 알아서 된다 -> 중요한건 새로 생긴 나무는 앞에서 넣어주기
 
