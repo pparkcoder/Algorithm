@@ -11,9 +11,9 @@ int solution(vector<vector<int>> board, vector<int> moves) {
     stack<int> st;
     int result = 0;
     int n = board.size();
-    for(int i=0;i<moves.size();++i){
+    for(int i = 0; i < moves.size(); ++i){
         int pick = moves[i] - 1;
-        for(int j=0;j<n;++j){
+        for(int j = 0; j < n; ++j){
             if(board[j][pick]){
                 if(!st.empty() && st.top() == board[j][pick]){
                     st.pop();
