@@ -1,8 +1,8 @@
-#include <string>
-#include <vector>
 // 2019 카카오 블라인드
 // https://programmers.co.kr/learn/courses/30/lessons/42889
 
+#include <string>
+#include <vector>
 #include <iostream>
 #include <algorithm>
 using namespace std;
