@@ -27,10 +27,10 @@
 #include <algorithm>
 using namespace std;
 int counting[501];
-bool cmp(const pair<double, int> a, const pair<double, int> b) // a : 실패율, b : stage num
+bool cmp(const pair<double, int> a, const pair<double, int> b) // first value : 실패율, second value : stage num
 {
-	if (a.first == b.first) { // 실패율이 같다면 stage num이 작은 순으로 정렬
-		if (a.second < b.second) return true;
+	if (a.first == b.first) { // 실패율이 같다면 
+		if (a.second < b.second) return true; // stage num이 작은 순으로 정렬 - a가 첫번째 인자, b가 두번째 인자 -> a < b : a가 앞 b가 뒤
 		else return false;
 	}
 	else if (a.first > b.first) return true; // 실패율이 큰 순으로 정렬
