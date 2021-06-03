@@ -1,5 +1,25 @@
 // 2019 카카오 블라인드
 // https://programmers.co.kr/learn/courses/30/lessons/42889
+//
+// vector sort 시 사용자 정의 함수 구현 법
+// ex) a가 큰 순서대로, a가 같다면 b가 작은순으로, b가 같다면 c가 큰 순으로 정렬
+//typedef struct {
+//	int a, b, c;
+//}info;
+// 
+//bool cmp(info first, info second) { 첫번째 인자, 두번째 인자
+//	if (first.a > second.a) return true; 
+//	else if (first.a == second.a) {
+//		if (first.b < second.b) return true;
+//		else if (first.b == second.b) {
+//			if (first.c > second.c) return true;
+//			else return false;
+//		}
+//		else return false;
+//	}
+//	else return false;
+//}
+// 만족하지 않는 조건이 없도록 구현이 중요 + 부등호의 방향에 따라 정렬
 
 #include <string>
 #include <vector>
