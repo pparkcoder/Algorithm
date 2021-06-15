@@ -21,14 +21,13 @@ int result = 987654321;
 int n, m;
 
 bool check(int x, int y) {
-	int nx1, ny1, nx2, ny2;
 	for (int i = 0; i < 2; ++i) {
-		nx1 = x + dx[i];
-		ny1 = y + dy[i];
+		int nx1 = x + dx[i];
+		int ny1 = y + dy[i];
 		if (0 <= nx1 && nx1 < n && 0 <= ny1 && ny1 < n && !map[nx1][ny1]) {
 			for (int j = 2; j < 4; ++j) {
-				nx2 = x + dx[j];
-				ny2 = y + dy[j];
+				int nx2 = x + dx[j];
+				int ny2 = y + dy[j];
 				if (0 <= nx2 && nx2 < n && 0 <= ny2 && ny2 < n && !map[nx2][ny2])
 					return false;
 			}
@@ -84,10 +83,9 @@ int main() {
 				v.push_back(mp(i, j));
 		}
 	}
-  int x, y;
 	for (int i = 0; i < v.size(); ++i) {
-		x = v[i].first;
-		y = v[i].second;
+		int x = v[i].first;
+		int y = v[i].second;
 		if (check(x, y)) {
 			map[x][y] = m;
 			result = min(result,bfs());
