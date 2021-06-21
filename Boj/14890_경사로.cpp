@@ -50,9 +50,11 @@ void start(int sx, int sy, int dir) {
 int main() {
 	ios::sync_with_stdio(0); cin.tie(0);
 	cin >> n >> l;
-	for (int i = 1; i <= n; i++)
-		for (int j = 1; j <= n; j++)
+	for (int i = 1; i <= n; i++){
+		for (int j = 1; j <= n; j++){
 			cin >> map[i][j];
+		}
+	}	
 	for (int i = 1; i <= n; i++) {
 		for (int j = 1; j <= n; j++) {
 			if (i == 1) start(i, j, 1);
