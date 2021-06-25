@@ -1,109 +1,117 @@
+// Solving -> bfs수행시 바로 x == r 이면 바로 return 금지 -> 같은 그룹이여도 방문처리가 안되고 return 될 수 있기에 -> 끝에 도달했다는 변수 지정 필요(stop)
+// Tip -> 미네랄이 내려가고 나서 내려간 미네랄도 방문처리 필요!
 // https://www.acmicpc.net/problem/2933
 
 #include<iostream>
-#include<algorithm>
 #include<vector>
 #include<queue>
 #include<cstring>
+#include<algorithm>
+#define mp make_pair
 using namespace std;
+queue<pair<int, int> >q;
+vector<pair<int, int> > temp;
+vector<int> v;
 char map[101][101];
-int visit[101][101];
+bool visit[101][101];
 int dx[4] = { 0,0,-1,1 };
 int dy[4] = { -1,1,0,0 };
-queue<pair<int, int> >q;
-vector<pair<int, int> >v;
-int r, c, n, order, min_num;
-void init() {
-	while (!q.empty()) q.pop();
-	v.clear();
-	memset(visit, 0, sizeof(visit));
-	min_num = 987654321;
+int r, c, h, n;
+void show() {
+	for (int i = 1; i <= r; ++i) {
+		for (int j = 1; j <= c; ++j)
+			cout << map[i][j];
+		cout << "\n";
+	}
 }
 void bfs(int sx, int sy) {
-	init();
-	q.push(make_pair(sx, sy));
-	visit[sx][sy] = 1;
+	while (!q.empty()) q.pop();
+	temp.clear();
+	int x, y, nx, ny, len, index, stop;
+	q.push(mp(sx, sy));
+	stop = visit[sx][sy] = 1;
 	while (!q.empty()) {
-		int x = q.front().first;
-		int y = q.front().second; q.pop();
-		if (x == r) return;
-		v.push_back(make_pair(x, y));
-		for (int i = 0; i < 4; i++) {
-			int nx = x + dx[i];
-			int ny = y + dy[i];
+		x = q.front().first;
+		y = q.front().second; q.pop();
+		temp.push_back(mp(x, y));
+	 	//if (x == r) return;
+		if (x == r) stop = 0; 
+		for (int i = 0; i < 4; ++i) {
+			nx = x + dx[i];
+			ny = y + dy[i];
 			if (0 < nx && nx <= r && 0 < ny && ny <= c && map[nx][ny] == 'x' && !visit[nx][ny]) {
-				q.push(make_pair(nx, ny));
+				q.push(mp(nx, ny));
 				visit[nx][ny] = 1;
 			}
 		}
 	}
-	for (int i = 0; i < v.size(); i++)
-		map[v[i].first][v[i].second] = '.';
-	for (int i = 0; i < v.size(); i++) {
-		int x = v[i].first;
-		int y = v[i].second;
-		int len = 0;
-		for (int j = 1;; j++) {
-			if (map[x + j][y] == 'x' || x + j > r) {
-				break;
-			}
-			++len;
-		}
-		min_num = min(min_num, len);
+	if (!stop) return;
+	for (int i = 0; i < temp.size(); ++i) {
+		x = temp[i].first;
+		y = temp[i].second;
+		map[x][y] = '.';
+		visit[x][y] = 0;
 	}
-	for (int i = 0; i < v.size(); i++) {
-		int x = v[i].first + min_num;
-		int y = v[i].second;
-		map[x][y] = 'x';
+	len = 987654321, index = 0;
+	for (int i = 0; i < temp.size(); ++i) {
+		x = temp[i].first;
+		y = temp[i].second;
+		for (int j = 1;; ++j) {
+			nx = x + j;
+			if (nx > r || map[nx][y] == 'x') break;
+			index = j;
+		}
+		len = min(len, index);
+	}
+	for (int i = 0; i < temp.size(); ++i) {
+		x = temp[i].first;
+		y = temp[i].second;
+		map[x+len][y] = 'x';
+		visit[x + len][y] = 1;
 	}
 }
-
-void start(int num, int turn) {
-	int x, y, flag;
-	flag = 0;
-	if (turn % 2) { 
-		for (int i = 1; i <= c; i++) {
-			if (map[num][i] == 'x') {
-				map[num][i] = '.';
-				x = num, y = i;
-				flag = 1;
-				break;
+void start() {
+	bool flag = 0;
+	for (int i = 0; i < n; ++i) {
+		h = v[i];	
+		if (!flag) {	// 왼쪽
+			for (int j = 1; j <= c; ++j) {
+				if (map[h][j] == 'x') {
+					map[h][j] = '.';
+					break;
+				}
+			}
+		}	
+		else {	// 
+			for (int j = c; j > 0; --j) {
+				if (map[h][j] == 'x') {
+					map[h][j] = '.';
+					break;
+				}
 			}
 		}
-	}
-	else { 
-		for (int i = c; i > 0; i--) {
-			if (map[num][i] == 'x') {
-				map[num][i] = '.';
-				x = num, y = i;
-				flag = 1;
-				break;
+		for (int j = 1; j <= r; ++j) {
+			for (int k = 1; k <= c; ++k) {
+				if (map[j][k] == 'x' && !visit[j][k]) {
+					bfs(j, k);
+				}
 			}
 		}
+		flag = !flag;
+		memset(visit, 0, sizeof(visit));
 	}
-	if (flag) {
-		for (int i = 0; i < 4; i++) {
-			int nx = x + dx[i];
-			int ny = y + dy[i];
-			if (0 < nx && nx <= r && 0 < ny && ny <= c && map[nx][ny] == 'x')
-				bfs(nx, ny);
-		}
-	}
+	show();
 }
 int main() {
-	ios::sync_with_stdio(false); cin.tie(0);
+	ios::sync_with_stdio(0); cin.tie(0);
 	cin >> r >> c;
-	for (int i = 1; i <= r; i++)
-		for (int j = 1; j <= c; j++)
+	for (int i = 1; i <= r; ++i)
+		for (int j = 1; j <= c; ++j)
 			cin >> map[i][j];
 	cin >> n;
-	for (int i = 1; i <= n; i++) {
-		cin >> order;
-		start(r + 1 - order, i);
+	for (int i = 0; i < n; ++i) {
+		cin >> h;
+		v.push_back(r + 1 - h);
 	}
-	for (int i = 1; i <= r; i++) {
-		for (int j = 1; j <= c; j++)
-			cout << map[i][j];
-		cout << "\n";
-	}
+	start();
 }
