@@ -1,4 +1,4 @@
-// Solving -> bfs수행시 바로 x == r 이면 바로 return 금지 -> 같은 그룹이여도 방문처리가 안되고 return 될 수 있기에 -> 끝에 도달했다는 변수 지정 필요(stop)
+// Solving -> bfs수행시 x == r 이면 바로 return 금지 -> 같은 그룹이여도 방문처리가 안되고 return 될 수 있기에 -> 끝에 도달했다는 변수 지정 필요(stop)
 // Tip -> 미네랄이 내려가고 나서 내려간 미네랄도 방문처리 필요!
 // https://www.acmicpc.net/problem/2933
 
