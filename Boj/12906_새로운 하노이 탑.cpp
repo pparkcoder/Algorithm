@@ -1,4 +1,7 @@
 // https://www.acmicpc.net/problem/12906
+// 구조체 안에 cnt 넣은 경우 - 42924KB / 1128ms 
+// visit으로 최소횟수 구한 경우 - 45288KB / 1328ms
+// Tip -> 구조체 안에 cnt를 넣는 경우를 우선적으로 고려할 것
 
 #include<iostream>
 #include<queue>
