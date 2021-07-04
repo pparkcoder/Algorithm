@@ -1,7 +1,7 @@
 // https://programmers.co.kr/learn/courses/30/lessons/67258
 // Two pointer algorithm
 // Solving -> 보석을 모두 찾았거나, e index가 끝지점이라면 s증가 / 아니라면 e 증가
-// Tip -> e index가 끝지점에 도착했다는 변수 필요
+// Tip -> e index가 끝지점에 도착했다는 변수 필요 + e index가 gems.size()보다 크거나 같다면 break -> 이미 지나온 구간값에서 답을 찾지 못
 
 #include <string>
 #include <vector>
@@ -41,7 +41,7 @@ vector<int> solution(vector<string> gems) {
 				++s;
 				flag = 1;
 			}
-			else if (++e >= gems.size()) e = gems.size() - 1, flag = 1;
+			else if (++e >= gems.size()) break;
 			else flag = 0;
 		}
 	}
