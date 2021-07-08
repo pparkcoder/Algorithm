@@ -1,6 +1,6 @@
 // 2020 카카오 인턴십
 // https://programmers.co.kr/learn/courses/30/lessons/67260
-// Solving -> 아직 방문하지 않은 방은 뒤에 매달아 주기
+// Solving -> 아직 방문하지 않은 방 뒤에 매달아 주기
 // Tip -> queue로 구현 시 계속해서 추가되기에 TLE 발생 -> set,map 으로 insert 하여 계속 추가되지 않게 하기
 
 #include <string>
@@ -20,7 +20,7 @@ bool bfs(int n) {
 	while (!q.empty()) {
 		now = q.front(); q.pop();
 		if (after[now].size() && s.find(after[now][0]) != s.end()) {
-			if (visit[now]) {
+			if (visit[atfer[now][0]]) {
 				s.erase(after[now][0]);
 				q.push(after[now][0]);
 				visit[after[now][0]] = 1;
@@ -82,7 +82,7 @@ bool visit2[200001];
 bool bfs(int n) {
 	q.push(0);
 	visit[0] = 1;
-	int now, next, flag, check, len;
+	int now, next, check, len;
 	while (1) {
 		while (!q.empty()) {
 			now = q.front(); q.pop();
