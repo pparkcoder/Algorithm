@@ -25,14 +25,6 @@ int make_len(int x, int y, int dir, int num) {
 		map[nx][ny] = num;
 	}
 }
-void show() {
-	cout << "\n";
-	for (int i = 1; i <= n; ++i) {
-		for (int j = 1; j <= n; ++j)
-			cout << map[i][j] << " ";
-		cout << "\n";
-	}
-}
 void dfs(int core_cnt, int len_cnt, int index) {
 	if (index == v.size()) {
 		if(result_core < core_cnt){
