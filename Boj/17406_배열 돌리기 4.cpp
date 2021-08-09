@@ -16,14 +16,6 @@ int dx[4] = { 0,1,0,-1 };
 int dy[4] = { 1,0,-1,0 };
 int n, m, k, r, c, s;
 int result = INT_MAX;
-void show() {
-	for (int i = 1; i <= n; ++i) {
-		for (int j = 1; j <= m; ++j)
-			cout << map[i][j] << " ";
-		cout << "\n";
-	}
-	cout << "\n";
-}
 void start() {
 	int x, y, pre, now, dir, nx, ny, sum, min_x, max_x, min_y, max_y;
 	for (int i = 0; i < k; ++i) {
