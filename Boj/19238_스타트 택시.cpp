@@ -1,5 +1,5 @@
 //https://www.acmicpc.net/problem/19238
-// Tip -> 손님을 태운 후, 목적지 까지 가는 경로가 없을수도 
+// Tip -> 손님을 태운 후, 목적지 까지 가는 경로가 없을수도 있음
 
 #include<iostream>
 #include<cstring>
@@ -33,7 +33,6 @@ pair<int, int> bfs(int taxi_x, int taxi_y, int flag, int num) {
 	temp.clear();
 	q.push(mp(taxi_x, taxi_y));
 	visit[taxi_x][taxi_y] = 0;
-	int stop = 0;
 	if (map[taxi_x][taxi_y]) return mp(0, map[taxi_x][taxi_y]);
 	while (!q.empty()) {
 		int x = q.front().first;
@@ -49,27 +48,23 @@ pair<int, int> bfs(int taxi_x, int taxi_y, int flag, int num) {
 			}
 		}
 	}
-	if (flag) return mp(-1, -1);
-	if (!temp.size()) return mp(-1, -1);
+	if (flag || !temp.size()) return mp(-1, -1);
 	sort(temp.begin(), temp.end());
 	return mp(temp.front().first.first, temp.front().second.second);
 }
 int start() {
 	while (1) {
 		if (func()) return fuel;
-
 		pair<int, int> result = bfs(sx, sy, 0, 0);
 		int len = result.first;
 		int num = result.second;
-		if (len == -1) return -1;
-		if (fuel - len < 0) return -1;
+		if (len == -1 || fuel - len < 0) return -1;
 		//태우기
 		fuel -= len;
 		map[v[num].start_x][v[num].start_y] = 0;
 		pair<int, int> result2 = bfs(v[num].start_x, v[num].start_y, 1, num);
 		int len2 = result2.first;
-		if (len2 == -1) return -1; // 목적지까지 가는 경로가 없는 경우
-		if (fuel - len2 < 0) return -1;
+		if (len2 == -1 || fuel - len2 < 0) return -1;
 		//내리기
 		fuel -= len2;
 		fuel += (len2 * 2);
