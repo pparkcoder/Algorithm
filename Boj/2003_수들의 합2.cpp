@@ -1,5 +1,9 @@
 // https://www.acmicpc.net/problem/2003
-// Two pointer algorithm
+// Tip -> while문 조건이 중요
+// 반례
+// 3 1
+// 1 2 1
+// output : 2
 
 #include<iostream>
 using namespace std;
