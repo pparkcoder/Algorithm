@@ -25,7 +25,7 @@ int turn(int x1, int y1, int x2, int y2) {
 			nx = x + dx[dir];
 			ny = y + dy[dir];
 		}
-        if(dir > 3) break;
+       		if(dir > 3) break;
 		now = map[nx][ny];
 		map[nx][ny] = pre;
 		pre = now;
