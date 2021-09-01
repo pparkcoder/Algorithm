@@ -1,4 +1,5 @@
 // https://www.acmicpc.net/problem/17822
+// Tip -> 평균은 int형이 아닌 float형으로 해야 pass
 
 #include<iostream>
 #include<vector>
@@ -19,7 +20,7 @@ void start(int x, int d, int k) {
 		if (i % x) continue;
 		for (int j = 1; j <= m; ++j)
 			dq.push_back(map[i][j]);
-        turn = k % m;
+       		turn = k % m; // k의 값이 커질 경우 % 연산 후 반복하는게 더 효율적
 		for (int j = 1; j <= turn; ++j) {
 			if (!d) {
 				temp = dq.back();
