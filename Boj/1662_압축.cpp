@@ -1,5 +1,17 @@
 // https://www.acmicpc.net/problem/1662
-// Tip -> STL에 push 할 때, char to string 인 경우 to_string 사용x -> + " " 를 사용
+// Solving -> 괄호 앞의 숫자는 그대로, 나머지는 1로 push
+// Tip -> to_string(숫자)만 가능 -> to_string('(') (X) -> 시간이 오래 걸렸던 이유
+
+// to_string 함수
+// string to_string (int num);
+// string to_string (long num);
+// string to_string (long long num);
+// string to_string (unsigned num);
+// string to_string (unsigned long num);
+// string to_string (unsigned long long num);
+// string to_string (float num);
+// string to_string (double num);
+// string to_string (long double num);
 
 #include<iostream>
 #include<string>
