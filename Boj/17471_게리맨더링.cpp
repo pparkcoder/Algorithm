@@ -2,22 +2,22 @@
 // Tip -> dfs로 되지 않는 구조 존재, 브루트포스 사용
 
 #include<iostream>
-#include<vector>
 #include<queue>
 #include<algorithm>
+#include<cmath>
 #include<cstring>
-#include<climits>
+#include<vector>
 using namespace std;
-vector<int> v[11], v2;
 queue<int> q;
-bool choice[11], visit[11];
+vector<int> v[11];
 int people[11];
-int n;
-int result = INT_MAX;
-bool check(int flag) {
+bool visit[11], v_visit[11];
+int result = 987654321;
+int n, num1, num2;
+bool check(int num) {
 	memset(visit, 0, sizeof(visit));
 	for (int i = 1; i <= n; ++i) {
-		if (choice[i] == flag) {
+		if (v_visit[i] == num) {
 			q.push(i);
 			visit[i] = 1;
 			break;
@@ -27,53 +27,49 @@ bool check(int flag) {
 		int now = q.front(); q.pop();
 		for (int i = 0; i < v[now].size(); ++i) {
 			int next = v[now][i];
-			if (choice[next] == flag && !visit[next]) {
+			if (v_visit[next] == num && !visit[next]) {
 				q.push(next);
 				visit[next] = 1;
 			}
 		}
 	}
-	for (int i = 1; i <= n; ++i) {
-		if (choice[i] == flag && !visit[i]) return false;
-	}
+	for (int i = 1; i <= n; ++i)
+		if (v_visit[i] == num && !visit[i]) return false;
 	return true;
 }
-void calc() {
-	if (check(0) && check(1)) {
-		int sum1 = 0, sum2 = 0;
-		for (int i = 1; i <= n; ++i) {
-			if (choice[i]) sum1 += people[i];
-			else sum2 += people[i];
-		}
-		result = min(result, abs(sum1 - sum2));
+int calc() {
+	int ans1 = 0, ans2 = 0;
+	for (int i = 1; i <= n; ++i) {
+		if (v_visit[i]) ans1 += people[i];
+		else ans2 += people[i];
 	}
+	return abs(ans1 - ans2);
 }
-void dfs(int index) {
-	if (v2.size() >= n) return;
-	if (v2.size()) calc();
-	for (int i = index; i <= n; ++i) {
-		if (!choice[i]) {
-			choice[i] = 1;
-			v2.push_back(i);
-			dfs(i + 1);
-			v2.pop_back();
-			choice[i] = 0;
+void brute(int num, int flag) {
+	if (flag && check(1) && check(0))
+		result = min(result, calc());
+	if (num == n) return;
+	for (int i = num; i <= n; ++i) {
+		if (!v_visit[i]) {
+			v_visit[i] = 1;
+			brute(i + 1, 1);
+			v_visit[i] = 0;
 		}
 	}
 }
 int main() {
 	ios::sync_with_stdio(0); cin.tie(0);
-	int num, cnt;
 	cin >> n;
 	for (int i = 1; i <= n; ++i)
 		cin >> people[i];
 	for (int i = 1; i <= n; ++i) {
-		cin >> cnt;
-		for(int j=0;j<cnt;++j) {
-			cin >> num;
-			v[i].push_back(num);
+		cin >> num1;
+		while (num1--) {
+			cin >> num2;
+			v[i].push_back(num2);
 		}
 	}
-	dfs(1);
-	cout << (result == INT_MAX ? -1 : result);
+	brute(1, 0);
+	result = (result == 987654321 ? -1 : result);
+	cout << result;
 }
