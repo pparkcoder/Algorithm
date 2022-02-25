@@ -4,69 +4,77 @@
 // 그렇지 않으면 현재칸이 흰색이거나 빨간색인 경우 다시한번 게임규칙이 작용하여 오답
 
 #include<iostream>
-#include<vector>
 #include<algorithm>
+#include<vector>
 using namespace std;
 typedef struct {
 	int num, x, y, dir;
 }info;
 info I;
 vector<info> v;
-vector<int> map[13][13], temp;
+vector<int> temp;
+vector<int> map[13][13];
 int color[13][13];
 int dx[5] = { 0,0,0,-1,1 };
 int dy[5] = { 0,1,-1,0,0 };
-int n, m, num;
+int n, k, num, x, y, dir;
+bool check() {
+	for (int i = 1; i <= n; ++i) {
+		for (int j = 1; j <= n; ++j) {
+			if (map[i][j].size() && map[i][j].size() > 3) return true;
+		}
+	}
+	return false;
+}
 int start() {
-	int num, x, y, dir, nx, ny, start_index;
-	for (int i = 1; i < 1001; ++i) {
-		for (int j = 0; j < m; ++j) {
-			temp.clear();
-			num = v[j].num;
-			x = v[j].x;
-			y = v[j].y;
-			dir = v[j].dir;
-			for (int k = 0; k < map[x][y].size(); ++k) {
-				if (map[x][y][k] == num) {
-					start_index = k;
-					break;
-				}
-			}
-			for (int k = start_index; k < map[x][y].size(); ++k)
-				temp.push_back(map[x][y][k]);
+	int st, nx, ny, ndir;
+	for (int l = 1; l < 1001; ++l) {
+		for (int i = 0; i < v.size(); ++i) {
+			num = v[i].num;
+			x = v[i].x;
+			y = v[i].y;
+			dir = v[i].dir;
 			nx = x + dx[dir];
 			ny = y + dy[dir];
+			temp.clear();
 			if (1 > nx || nx > n || 1 > ny || ny > n || color[nx][ny] == 2) {
 				if (dir == 1 || dir == 3) ++dir;
 				else --dir;
 				nx = x + dx[dir];
 				ny = y + dy[dir];
 				if (1 > nx || nx > n || 1 > ny || ny > n || color[nx][ny] == 2) {
-					v[num].dir = dir;
+					v[num - 1].dir = dir;
 					continue;
 				}
 			}
-			if (color[nx][ny] == 1) reverse(temp.begin(), temp.end());
-			for (int k = 0; k < temp.size(); ++k) {
-				map[nx][ny].push_back(temp[k]);
-				v[temp[k]].x = nx;
-				v[temp[k]].y = ny;
+			for (int j = 0; j < map[x][y].size(); ++j) {
+				if (map[x][y][j] == num) {
+					st = j;
+					break;
+				}
 			}
-			v[num].dir = dir;
-			map[x][y].erase(map[x][y].begin() + start_index, map[x][y].end());
-			if(map[nx][ny].size() > 3) return i;
+			for (int j = st; j < map[x][y].size(); ++j)
+				temp.push_back(map[x][y][j]);
+			map[x][y].erase(map[x][y].begin() + st, map[x][y].end());
+			if (color[nx][ny] == 1) reverse(temp.begin(), temp.end());
+			for (int j = 0; j < temp.size(); ++j) {
+				map[nx][ny].push_back(temp[j]);
+				v[temp[j] - 1].x = nx;
+				v[temp[j] - 1].y = ny;
+			}
+			v[num - 1].dir = dir;
+			if (check()) return l;
 		}
 	}
 	return -1;
 }
 int main() {
 	ios::sync_with_stdio(0); cin.tie(0);
-	cin >> n >> m;
+	cin >> n >> k;
 	for (int i = 1; i <= n; ++i)
 		for (int j = 1; j <= n; ++j)
 			cin >> color[i][j];
-	int x, y, dir;
-	for (int i = 0; i < m; ++i) {
+	for (int i = 1; i <= k; ++i) {
 		cin >> x >> y >> dir;
 		I = { i,x,y,dir };
 		v.push_back(I);
