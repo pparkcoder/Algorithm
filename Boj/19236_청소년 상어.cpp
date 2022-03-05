@@ -21,18 +21,15 @@ bool cmp(info a, info b) {
 	if (a.num < b.num) return true;
 	else return false;
 }
-void restore(vector<info> &temp, int flag) {
-	if (!flag) temp = v;
-	else {
-		v = temp;
-		memset(map, 0, sizeof(map));
-		for (int i = 0; i < 16; ++i) {
-			if (!v[i].life) continue;
-			int x = v[i].x;
-			int y = v[i].y;
-			map[x][y] = v[i].num;
-		}
-	}
+void restore(vector<info> &temp) {
+    v = temp;
+    memset(map, 0, sizeof(map));
+    for (int i = 0; i < 16; ++i) {
+        if (!v[i].life) continue;
+        int x = v[i].x;
+        int y = v[i].y;
+        map[x][y] = v[i].num;
+    }
 }
 void move_fish() {
 	for (int i = 0; i < 16; ++i) {
@@ -66,19 +63,18 @@ void move_fish() {
 void brute(int x, int y, int dir, int sum) {
 	result = max(result, sum);
 	move_fish();
-	vector<info> temp;
+	vector<info> temp = v;
 	for (int i = 1; i < 4; ++i) {
 		int nx = x + dx[dir] * i;
 		int ny = y + dy[dir] * i;
 		if (0 <= nx && nx < 4 && 0 <= ny && ny < 4 && map[nx][ny]) {
-			restore(temp, 0);
 			fish_num = map[nx][ny];
 			map[nx][ny] = -1;
 			map[x][y] = 0;
 			v[fish_num - 1].life = 0;
 			brute(nx, ny, v[fish_num - 1].dir, sum + fish_num);
 			v[fish_num - 1].life = 1;
-			restore(temp, 1);
+			restore(temp);
 		}
 	}
 }
