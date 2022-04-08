@@ -20,7 +20,7 @@ int map[21][21], visit[21][21], memo[21][21], wall[21][21][5];
 int r, c, k, w, x, y, dir, t, num;
 int result = 0;
 bool check() {
-	for (int i = 0; i < v2.size(); ++i)
+	for (int i = 0; i < v2.size(); ++i) 
 		if (map[v2[i].first][v2[i].second] < k) return false;
 	return true;
 }
@@ -51,7 +51,7 @@ void make_sub() {
 	for (int i = 1; i <= r; ++i) {
 		for (int j = 1; j <= c; ++j) {
 			if (i == 1 || i == r || j == 1 || j == c) {
-				if (--map[i][j] < 0) map[i][j] = 0;
+				if (map[i][j] && --map[i][j] < 0) map[i][j] = 0;
 			}
 		}
 	}
@@ -123,7 +123,7 @@ void start() {
 		move();
 		make_sub();
 		++result;
-		if (result == 100 || check()) break;
+		if (result == 101 || check()) break;
 	}
 }
 int main() {
