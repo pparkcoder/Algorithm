@@ -12,15 +12,14 @@ queue<info> q;
 int dx[4] = { 0,0,-1,1 };
 int dy[4] = { -1,1,0,0 };
 int map[51][51];
-int visit[51][51][51]; // x, y, 현재까지 최대 높이
+int visit[51][51];
 int t, n, m, start_x, start_y, dest_x, dest_y, result;
 void q_push(int x, int y, int max_h) {
 	I = { x,y,max_h };
 	q.push(I);
-	visit[x][y][max_h] = 1;
+	visit[x][y] = max_h;
 }
 void bfs() {
-	memset(visit, 0, sizeof(visit));
 	q_push(start_x, start_y, 1);
 	int jx, jy, tx, ty, jump, temp_max_h;
 	while (!q.empty()) {
@@ -36,7 +35,7 @@ void bfs() {
 			int ny = y + dy[i];
 			if (0 < nx && nx <= n && 0 < ny && ny <= m) {
 				if (map[nx][ny]) {
-					if (!visit[nx][ny][max_h])
+					if (visit[nx][ny] > max_h)
 						q_push(nx, ny, max_h);
 				}
 				else {
@@ -51,7 +50,7 @@ void bfs() {
 						if (1 > jx || jx > n || 1 > jy || jy > m) break;
 						if (map[jx][jy]) {
 							temp_max_h = max(jump, max_h);
-							if(!visit[jx][jy][temp_max_h])
+							if(visit[jx][jy] > temp_max_h)
 								q_push(jx, jy, temp_max_h);
 							break;
 						}
@@ -76,6 +75,7 @@ int main() {
 					else dest_x = i, dest_y = j;
 					map[i][j] = 1;
 				}
+				visit[i][j] = INT_MAX;
 			}
 		}
 		result = INT_MAX;
