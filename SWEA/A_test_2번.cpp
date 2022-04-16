@@ -13,23 +13,20 @@ int dx[4] = { 0,0,-1,1 };
 int dy[4] = { -1,1,0,0 };
 int map[51][51];
 int visit[51][51];
-int t, n, m, start_x, start_y, dest_x, dest_y, result;
+int t, n, m, start_x, start_y, dest_x, dest_y;
 void q_push(int x, int y, int max_h) {
 	I = { x,y,max_h };
 	q.push(I);
 	visit[x][y] = max_h;
 }
-void bfs() {
+int bfs() {
 	q_push(start_x, start_y, 1);
 	int jx, jy, tx, ty, jump, temp_max_h;
 	while (!q.empty()) {
 		int x = q.front().x;
 		int y = q.front().y;
 		int max_h = q.front().max_h; q.pop();
-		if (x == dest_x && y == dest_y) {
-			result = min(result, max_h);
-			continue;
-		}
+		if (x == dest_x && y == dest_y) continue;
 		for (int i = 0; i < 4; ++i) {
 			int nx = x + dx[i];
 			int ny = y + dy[i];
@@ -61,6 +58,7 @@ void bfs() {
 			}
 		}
 	}
+	return visit[dest_x][dest_y];
 }
 int main() {
 	ios::sync_with_stdio(0); cin.tie(0);
@@ -78,8 +76,6 @@ int main() {
 				visit[i][j] = INT_MAX;
 			}
 		}
-		result = INT_MAX;
-		bfs();
-		cout << "#" << l << " " << result << "\n";
+		cout << "#" << l << " " << bfs() << "\n";
 	}
 }
