@@ -1,3 +1,4 @@
+// https://www.codetree.ai/frequent-problems/tree-kill-all/description
 // 제초제 선정위치는 벽과 제초제가 뿌려진 위치를 제외한 모든점에서 생각 -> 선정된 점이 나무가 없는 점이면 그곳만 처리하고 continue
 // 나무가 없거나 제초제가 뿌려진 위치에서는 더 이상 전파x
 
