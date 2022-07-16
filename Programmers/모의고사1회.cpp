@@ -96,3 +96,76 @@ int solution(vector<int> order) {
     }
     return result;
 }
+
+// 4번
+#include <string>
+#include <vector>
+#include <set>
+#include <cmath>
+#include <iostream>
+
+using namespace std;
+set<string> s;
+int map[11][11];
+string start = "", dest = "";
+int result = 987654321, len;
+
+void show() {
+    cout << "\n";
+    for (int i = 1; i <= len; ++i) {
+        for (int j = 1; j <= len; ++j)
+            cout << map[i][j] << " ";
+        cout << "\n";
+    }
+}
+
+void make_map(string temp) {
+    int index = 0;
+    for (int i = 1; i <= len; ++i)
+        for (int j = 1; j <= len; ++j)
+            map[i][j] = temp[index++] - '0';
+}
+
+void brute(int flag, string temp, int cnt) {
+    if (cnt && temp == dest) {
+        result = cnt;
+        return;
+    }
+    for (int i = 0; i < 2; ++i) {
+        for (int j = flag; j <= len; ++j) {
+            make_map(temp);
+            string temp2 = "";
+
+            for (int k = 1; k <= len; ++k) {
+                if (!i) map[j][k] = abs(1 - map[j][k]);
+                else map[k][j] = abs(1 - map[k][j]);
+            }
+
+            for (int k = 1; k <= len; ++k)
+                for (int l = 1; l <= len; ++l)
+                    temp2 += to_string(map[k][l]);
+
+            if(s.find(temp2) == s.end()) {
+                s.insert(temp2);
+                brute(j, temp2, cnt + 1);
+                s.erase(s.find(temp2));
+            }
+        }
+    }
+}
+
+int solution(vector<vector<int>> beginning, vector<vector<int>> target) {
+    len = beginning.size();
+    for (int i = 0; i < beginning.size(); ++i) {
+        for (int j = 0; j < beginning[i].size(); ++j) {
+            start += to_string(beginning[i][j]);
+            dest += to_string(target[i][j]);
+        }
+    }
+    if (start == dest) return 0;
+    else {
+        s.insert(start);
+        brute(1, start, 0);
+        return (result == 987654321 ? -1 : result);
+    }
+}
