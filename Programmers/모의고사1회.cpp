@@ -108,16 +108,7 @@ using namespace std;
 set<string> s;
 int map[11][11];
 string start = "", dest = "";
-int result = 987654321, len;
-
-void show() {
-    cout << "\n";
-    for (int i = 1; i <= len; ++i) {
-        for (int j = 1; j <= len; ++j)
-            cout << map[i][j] << " ";
-        cout << "\n";
-    }
-}
+int result = 987654321, stop = 0, len;
 
 void make_map(string temp) {
     int index = 0;
@@ -129,6 +120,7 @@ void make_map(string temp) {
 void brute(int flag, string temp, int cnt) {
     if (cnt && temp == dest) {
         result = cnt;
+        stop = 1;
         return;
     }
     for (int i = 0; i < 2; ++i) {
@@ -149,6 +141,7 @@ void brute(int flag, string temp, int cnt) {
                 s.insert(temp2);
                 brute(j, temp2, cnt + 1);
                 s.erase(s.find(temp2));
+                if(stop) return;
             }
         }
     }
