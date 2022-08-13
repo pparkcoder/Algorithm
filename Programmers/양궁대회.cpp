@@ -32,6 +32,7 @@ void brute(int index, vector<int> info, int a_sum, int l_sum, int cnt) {
                 }
                 v2.pop_back();
             }
+            else return;
         }
     }
 }
