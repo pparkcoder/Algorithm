@@ -100,65 +100,86 @@ int solution(vector<int> order) {
 // 4번
 #include <string>
 #include <vector>
-#include <set>
 #include <cmath>
-#include <iostream>
 
 using namespace std;
-set<string> s;
-int map[11][11];
-string start = "", dest = "";
-int result = 987654321, stop = 0, len;
+vector<int> v, v2;
+string s1, s2;
+int n, m, result;
 
-void make_map(string temp) {
+string make(int flag, string temp) {
+    string ans = "";
+    int map[11][11];
     int index = 0;
-    for (int i = 1; i <= len; ++i)
-        for (int j = 1; j <= len; ++j)
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= m; ++j) {
             map[i][j] = temp[index++] - '0';
+        }
+    }
+    if (!flag) {
+        for (int i = 0; i < v.size(); ++i) {
+            index = v[i];
+            for (int j = 1; j <= m; ++j)
+                map[index][j] = abs(1 - map[index][j]);
+        }
+    } else {
+        for (int i = 0; i < v2.size(); ++i) {
+            index = v2[i];
+            for (int j = 1; j <= n; ++j)
+                map[j][index] = abs(1 - map[j][index]);
+        }
+    }
+    for (int i = 1; i <= n; ++i)
+        for (int j = 1; j <= m; ++j)
+            ans += to_string(map[i][j]);
+    return ans;
 }
 
-void brute(int flag, string temp, int cnt) {
-    if (cnt && temp == dest) {
-        result = cnt;
-        stop = 1;
+void brute_col(int index, int cnt, string temp2, int row_cnt) {
+    if (v2.size() == cnt) {
+        string temp3 = make(1, temp2);
+
+        if (temp3 == s2) result = min(result, cnt + row_cnt);
         return;
     }
-    for (int i = 0; i < 2; ++i) {
-        for (int j = flag; j <= len; ++j) {
-            make_map(temp);
-            string temp2 = "";
+    for (int i = index; i <= m; ++i) {
+        v2.push_back(i);
+        brute_col(i + 1, cnt, temp2, row_cnt);
+        v2.pop_back();
+    }
+}
 
-            for (int k = 1; k <= len; ++k) {
-                if (!i) map[j][k] = abs(1 - map[j][k]);
-                else map[k][j] = abs(1 - map[k][j]);
-            }
-
-            for (int k = 1; k <= len; ++k)
-                for (int l = 1; l <= len; ++l)
-                    temp2 += to_string(map[k][l]);
-
-            if(s.find(temp2) == s.end()) {
-                s.insert(temp2);
-                brute(j, temp2, cnt + 1);
-                s.erase(s.find(temp2));
-                if(stop) return;
-            }
+void brute_row(int index, int cnt, string temp) {
+    if (v.size() == cnt) {
+        string temp2 = make(0, temp);
+        for (int i = 0; i <= m; ++i) {
+            brute_col(1, i, temp2, cnt);
         }
+        return;
+    }
+    for (int i = index; i <= n; ++i) {
+        v.push_back(i);
+        brute_row(i + 1, cnt, temp);
+        v.pop_back();
     }
 }
 
 int solution(vector<vector<int>> beginning, vector<vector<int>> target) {
-    len = beginning.size();
-    for (int i = 0; i < beginning.size(); ++i) {
-        for (int j = 0; j < beginning[i].size(); ++j) {
-            start += to_string(beginning[i][j]);
-            dest += to_string(target[i][j]);
+    n = beginning.size();
+    m = beginning[0].size();
+    s1 = "", s2 = "";
+    result = 987654321;
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            s1 += to_string(beginning[i][j]);
+            s2 += to_string(target[i][j]);
         }
     }
-    if (start == dest) return 0;
+    if (s1 == s2) return 0;
     else {
-        s.insert(start);
-        brute(1, start, 0);
-        return (result == 987654321 ? -1 : result);
+        for (int i = 0; i <= n; ++i) {
+            brute_row(1, i, s1);
+        }
     }
+    return (result == 987654321 ? -1 : result);
 }
