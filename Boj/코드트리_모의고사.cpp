@@ -224,29 +224,6 @@ int main() {
 		cin >> k >> c;
 		order.push_back(mp(k, c));
 	}
-	for (int i = 0; i < n; ++i) {
-		k = order[i].first;
-		c = order[i].second;
-		if (c) {
-			block_down(k, 0, c);
-			if (check()) {
-				++result;
-				total_down();
-			}
-			move();
-			total_down();
-			while (1) {
-				if (check()) {
-					++result;
-					total_down();
-				}
-				else break;
-			}
-		}
-		else {
-			brute(i, result);
-			break;
-		}
-	}
+	brute(0, 0);
 	cout << result;
 }
