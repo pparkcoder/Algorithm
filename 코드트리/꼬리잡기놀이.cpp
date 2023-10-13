@@ -190,3 +190,150 @@ int main() {
     }
     cout << result;
 }
+
+// 두번째 풀이
+// 머리와 꼬리가 바뀌는 flag 필요
+// line 268에서 3인 경우만 체크해서 틀림
+// 머리와 꼬리가 바뀌면 3 -> 1이 되기에 1인 경우의 체크도 필요
+
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<cstring>
+#include<algorithm>
+#define mp make_pair
+using namespace std;
+pair<int, int> map[21][21];
+queue<pair<int, int > > q;
+vector<pair<int, pair<int, int> > >team[6], memo[6];
+int dx[4] = { 0,-1,0,1 };
+int dy[4] = { 1,0,-1,0 };
+int dx2[4] = { 1,0,-1,0 };
+int dy2[4] = { 0,1,0,-1 };
+bool visit[21][21], dir_check[6];
+int n, m, l;
+int sx = 1, sy = 1, dir = 0, result = 0;
+void calc() {
+	int stop = 0;
+	int nx = sx, ny = sy;
+	while (1) {
+		if (1 > nx || nx > n || 1 > ny || ny > n || stop) break;
+		if (map[nx][ny].first != 0 && map[nx][ny].first != 4) {
+			int team_num = map[nx][ny].second;
+			for (int i = 0; i < team[team_num].size(); ++i) {
+				if (nx == team[team_num][i].second.first && ny == team[team_num][i].second.second) {
+					result += ((i + 1) * (i + 1));
+					reverse(team[team_num].begin(), team[team_num].end());
+					dir_check[team_num] = !dir_check[team_num];
+					stop = 1;
+					break;
+				}
+			}
+		}
+		nx += dx[dir];
+		ny += dy[dir];
+	}
+	sx += dx2[dir];
+	sy += dy2[dir];
+	if (1 > sx || sx > n || 1 > sy || sy > n) {
+		sx -= dx2[dir];
+		sy -= dy2[dir];
+		if (++dir > 3) dir = 0;
+	}
+}
+void move() {
+	for (int i = 1; i <= m; ++i) {
+		int len = team[i].size();
+		for (int j = 0; j < len; ++j) {
+			int x = team[i][j].second.first;
+			int y = team[i][j].second.second;
+			int num = team[i][j].first; // 현재 사람 번호 
+			for (int k = 0; k < 4; ++k) {
+				int nx = x + dx[k];
+				int ny = y + dy[k];
+				if (0 < nx && nx <= n && 0 < ny && ny <= n) {
+					if (j == 0 && map[nx][ny].first != 0 && map[nx][ny].first != 2) { // 머리 이동
+						memo[i].push_back(mp(j, mp(nx, ny)));
+						map[x][y] = mp(-1, 0);
+						map[nx][ny] = mp(num, i);
+						break;
+					}
+					else if (j != 0 && map[nx][ny].first == -1) {
+						if (j != len - 1) { // 중간 사람
+							memo[i].push_back(mp(j, mp(nx, ny)));
+							map[x][y] = mp(-1, 0);
+							map[nx][ny] = mp(num, i);
+							break;
+						}
+						else { // 꼬리 사람
+							memo[i].push_back(mp(j, mp(nx, ny)));
+							if (!dir_check[i] && map[x][y].first == 3) map[x][y] = mp(4, 0);
+							else if(dir_check[i] && map[x][y].first == 1) map[x][y] = mp(4, 0);
+							map[nx][ny] = mp(num, i);
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+	for (int i = 1; i <= m; ++i) {
+		for (int j = 0; j < memo[i].size(); ++j) {
+			team[i][j].second.first = memo[i][j].second.first;
+			team[i][j].second.second = memo[i][j].second.second;
+		}
+		memo[i].clear();
+	}
+}
+void make_team() {
+	for (int i = 1; i <= m; ++i) {
+		while (!q.empty()) q.pop();
+		memset(visit, 0, sizeof(visit));
+		int tx = team[i][0].second.first;
+		int ty = team[i][0].second.second;
+		q.push(mp(tx, ty));
+		visit[tx][ty] = 1;
+		while (!q.empty()) {
+			int x = q.front().first;
+			int y = q.front().second; q.pop();
+			if (map[x][y].first == 3) break;
+			for (int j = 0; j < 4; ++j) {
+				int nx = x + dx[j];
+				int ny = y + dy[j];
+				if (0 < nx && nx <= n && 0 < ny && ny <= n && !visit[nx][ny]) {
+					if (map[x][y].first == 1 && map[nx][ny].first == 2) {
+						q.push(mp(nx, ny));
+						visit[nx][ny] = 1;
+						team[i].push_back(mp(map[nx][ny].first, mp(nx, ny)));
+						map[nx][ny].second = i;
+					}
+					else if (map[x][y].first == 2 && (map[nx][ny].first == 2 || map[nx][ny].first == 3)) {
+						q.push(mp(nx, ny));
+						visit[nx][ny] = 1;
+						team[i].push_back(mp(map[nx][ny].first, mp(nx, ny)));
+						map[nx][ny].second = i;
+					}
+				}
+			}
+		}
+	}
+}
+int main() {
+	ios::sync_with_stdio(0); cin.tie(0);
+	cin >> n >> m >> l;
+	int team_index = 1;
+	for (int i = 1; i <= n; ++i) {
+		for (int j = 1; j <= n; ++j) {
+			cin >> map[i][j].first;
+			if (map[i][j].first == 1) {
+				team[team_index++].push_back(mp(1, mp(i, j)));
+			}
+		}
+	}
+	make_team();
+	while (l--) {
+		move();
+		calc();
+	}
+	cout << result;
+}
