@@ -1,6 +1,7 @@
 // https://www.codetree.ai/training-field/frequent-problems/problems/magical-forest-exploration/description?page=1&pageSize=5
 // x열 0~1은 처음 시작 위치로 가정하였으므로 실제 map의 유효 범위는 2부터 r+1까지
 // 배열 범위 x열 늘리기 + 범위 체크 x열 늘리기
+// 현재 코드에서 중심만 보고 판단하는것으로 리팩토링 필요
 #include<iostream>
 #include<vector>
 #include<queue>
