@@ -135,3 +135,176 @@ int main() {
 	}
 	start();
 }
+
+// 재귀 사용
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstring>
+#define mp make_pair
+using namespace std;
+
+typedef struct {
+	int x, y, h, w, k, life;
+}info;
+info I;
+info people[31];
+vector<pair<int, int> > order;
+vector<int> move_list;
+int dx[4] = { -1,0,1,0 };
+int dy[4] = { 0,1,0,-1 };
+int map[41][41], holl[41][41]; // 1 : 함정, 2 : 벽
+int score[31], visit[31];
+int L, N, Q;
+bool len_check(int x, int y) {
+	if (1 > x || x > L || 1 > y || y > L || holl[x][y] == 2) return false;
+	return true;
+}
+void damage() {
+	for (int t = 0; t < move_list.size() - 1; ++t) {
+		int num = move_list[t];
+		int x = people[num].x;
+		int y = people[num].y;
+		int h = people[num].h;
+		int w = people[num].w;
+		int k = people[num].k;
+		int cnt = 0;
+		for (int i = x; i < x + h; ++i) {
+			for (int j = y; j < y + w; ++j) {
+				if (holl[i][j] == 1) ++cnt;
+			}
+		}
+		int nk = k - cnt;
+		if (nk <= 0) {
+			people[num].life = 0;
+			for (int i = x; i < x + h; ++i)
+				for (int j = y; j < y + w; ++j)
+					map[i][j] = 0;
+		}
+		else {
+			people[num].k = nk;
+			score[num] += cnt;
+		}
+	}
+}
+void move(int dir) {
+	reverse(move_list.begin(), move_list.end());
+	for (int t = 0; t < move_list.size(); ++t) {
+		int num = move_list[t];
+		int x = people[num].x;
+		int y = people[num].y;
+		int h = people[num].h;
+		int w = people[num].w;
+		for (int i = x; i < x + h; ++i)
+			for (int j = y; j < y + w; ++j)
+				map[i][j] = 0;
+	}
+	for (int t = 0; t < move_list.size(); ++t) {
+		int num = move_list[t];
+		int x = people[num].x;
+		int y = people[num].y;
+		int h = people[num].h;
+		int w = people[num].w;
+		int k = people[num].k;
+		for (int i = x; i < x + h; ++i) {
+			for (int j = y; j < y + w; ++j) {
+				int nx = i + dx[dir];
+				int ny = j + dy[dir];
+				map[nx][ny] = num;
+				if (x == i && y == j) {
+					people[num].x = nx;
+					people[num].y = ny;
+				}
+			}
+		}
+	}
+}
+bool move_check(int num, int d) {
+	move_list.push_back(num);
+	visit[num] = 1;
+	int x = people[num].x;
+	int y = people[num].y;
+	int h = people[num].h;
+	int w = people[num].w;
+	int nx, ny;
+	if (d == 0) {
+		for (int i = y; i < y + w; ++i) {
+			nx = x + dx[d];
+			ny = i + dy[d];
+			if (!len_check(nx, ny)) return false;
+			if (map[nx][ny] && !visit[map[nx][ny]]) {
+				if (!move_check(map[nx][ny], d)) return false;
+			}
+		}
+	}
+	else if (d == 1) {
+		for (int i = x; i < x + h; ++i) {
+			nx = i + dx[d];
+			ny = (y + w - 1) + dy[d];
+			if (!len_check(nx, ny)) return false;
+			if (map[nx][ny] && !visit[map[nx][ny]]) {
+				if (!move_check(map[nx][ny], d)) return false;
+			}
+		}
+	}
+	else if (d == 2) {
+		for (int i = y; i < y + w; ++i) {
+			nx = (x + h - 1) + dx[d];
+			ny = i + dy[d];
+			if (!len_check(nx, ny)) return false;
+			if (map[nx][ny] && !visit[map[nx][ny]]) {
+				if (!move_check(map[nx][ny], d)) return false;
+			}
+		}
+	}
+	else if (d == 3) {
+		for (int i = x; i < x + h; ++i) {
+			nx = i + dx[d];
+			ny = y + dy[d];
+			if (!len_check(nx, ny)) return false;
+			if (map[nx][ny] && !visit[map[nx][ny]]) {
+				if (!move_check(map[nx][ny], d)) return false;
+			}
+		}
+	}
+	return true;
+}
+void start() {
+	int result = 0;
+	for (int i = 0; i < order.size(); ++i) {
+		move_list.clear();
+		memset(visit, 0, sizeof(visit));
+		int num = order[i].first;
+		int dir = order[i].second;
+		if (!people[num].life || !move_check(num, dir)) continue;
+		move(dir);
+		damage();
+	}
+	for (int i = 1; i <= N; ++i) {
+		if (!people[i].life) continue;
+		result += score[i];
+	}
+	cout << result;
+}
+int main() {
+	ios::sync_with_stdio(0); cin.tie(0);
+	cin >> L >> N >> Q;
+	for (int i = 1; i <= L; ++i)
+		for (int j = 1; j <= L; ++j)
+			cin >> holl[i][j];
+	for (int t = 1; t <= N; ++t) {
+		int x, y, h, w, k;
+		cin >> x >> y >> h >> w >> k;
+		I = { x,y,h,w,k,1 };
+		people[t] = I;
+		for (int i = x; i < x + h; ++i)
+			for (int j = y; j < y + w; ++j)
+				map[i][j] = t;
+	}
+	for (int i = 1; i <= Q; ++i) {
+		int num, dir;
+		cin >> num >> dir;
+		order.push_back(mp(num, dir));
+	}
+	start();
+}
