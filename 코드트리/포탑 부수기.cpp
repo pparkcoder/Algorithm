@@ -174,3 +174,163 @@ int main() {
 	}
 	cout << start();
 }
+
+// 2번째 풀이
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<algorithm>
+#include<cstring>
+#include<climits>
+#define mp make_pair
+using namespace std;
+typedef struct {
+	int num, turn, sum, y, x;
+}info;
+typedef struct {
+	int x, y;
+	vector<pair<int, int> > temp;
+}info2;
+info I;
+info2 I2;
+vector<info> v;
+int map[11][11], turn_check[11][11];
+bool attack[11][11];
+int dx[8] = { 0,1,0,-1,-1,-1,1,1 };
+int dy[8] = { 1,0,-1,0,-1,1,-1,1 };
+int N, M, K, wx, wy, lx, ly;
+bool cmp(info a, info b) {
+	if (a.num == b.num) {
+		if (a.turn == b.turn) {
+			if (a.sum == b.sum) return a.y > b.y;
+			else return a.sum > b.sum;
+		}
+		else return a.turn > b.turn;
+	}
+	else return a.num < b.num;
+}
+bool repair() {
+	int cnt = 0;
+	for (int i = 1; i <= N; ++i)
+		for (int j = 1; j <= M; ++j)
+			if (map[i][j]) ++cnt;
+	if (cnt <= 1) return false;
+	for (int i = 1; i <= N; ++i)
+		for (int j = 1; j <= M; ++j)
+			if (map[i][j] && !attack[i][j]) ++map[i][j];
+	return true;
+}
+void check() {
+	for (int i = 1; i <= N; ++i)
+		for (int j = 1; j <= M; ++j)
+			if (map[i][j] <= 0) map[i][j] = 0;
+}
+void boom(int turn) {
+	memset(attack, 0, sizeof(attack));
+	attack[wx][wy] = 1;
+	map[lx][ly] -= map[wx][wy];
+	attack[lx][ly] = 1;
+	for (int i = 0; i < 8; ++i) {
+		int nx = lx + dx[i];
+		int ny = ly + dy[i];
+
+		if (nx > N) nx = 1;
+		else if (nx < 1) nx = N;
+		if (ny > M) ny = 1;
+		else if (ny < 1) ny = M;
+
+		if (nx == wx && ny == wy) continue;
+
+		if (map[nx][ny]) {
+			map[nx][ny] -= (map[wx][wy] / 2);
+			attack[nx][ny] = 1;
+		}
+	}
+	turn_check[wx][wy] = turn;
+}
+bool razer(int turn) {
+	int visit[11][11];
+	for (int i = 1; i <= N; ++i)
+		for (int j = 1; j <= M; ++j)
+			visit[i][j] = INT_MAX;
+	memset(attack, 0, sizeof(attack));
+	queue<info2> q;
+	vector<pair<int, int> > temp;
+	I2 = { wx,wy,temp };
+	q.push(I2);
+	attack[wx][wy] = visit[wx][wy] = 1;
+	while (!q.empty()) {
+		int x = q.front().x;
+		int y = q.front().y;
+		temp = q.front().temp; q.pop();
+		if (x == lx && y == ly) {
+			for (int i = 0; i < temp.size(); ++i) {
+				int tx = temp[i].first;
+				int ty = temp[i].second;
+				if (tx == lx && ty == ly) map[tx][ty] -= map[wx][wy];
+				else map[tx][ty] -= (map[wx][wy] / 2);
+				attack[tx][ty] = 1;
+			}
+			turn_check[wx][wy] = turn;
+			return true;
+		}
+		for (int i = 0; i < 4; ++i) {
+			int nx = x + dx[i];
+			int ny = y + dy[i];
+
+			if (nx > N) nx = 1;
+			else if (nx < 1) nx = N;
+			if (ny > M) ny = 1;
+			else if (ny < 1) ny = M;
+
+			if (!map[nx][ny] || visit[x][y] + 1 > visit[nx][ny]) continue;
+
+			vector<pair<int, int> > temp2 = temp;
+			temp2.push_back(mp(nx, ny));
+			I2 = { nx,ny,temp2 };
+			q.push(I2);
+			visit[nx][ny] = visit[x][y] + 1;
+		}
+	}
+	return false;
+}
+void choice() {
+	v.clear();
+	for (int i = 1; i <= N; ++i) {
+		for (int j = 1; j <= M; ++j) {
+			if (map[i][j]) {
+				I = { map[i][j],turn_check[i][j],i + j,j,i };
+				v.push_back(I);
+			}
+		}
+	}
+	sort(v.begin(), v.end(), cmp);
+	wx = v[0].x;
+	wy = v[0].y;
+	lx = v[v.size() - 1].x;
+	ly = v[v.size() - 1].y;
+	map[wx][wy] += (N + M);
+}
+void start() {
+	int result = 0;
+	memset(turn_check, 0, sizeof(turn_check));
+	for (int t = 1; t <= K; ++t) {
+		choice();
+		if (!razer(t)) boom(t);
+		check();
+		if (!repair()) break;
+	}
+	for (int i = 1; i <= N; ++i) {
+		for (int j = 1; j <= M; ++j)
+			if (map[i][j]) result = max(result, map[i][j]);
+	}
+	cout << result;
+}
+int main() {
+	ios::sync_with_stdio(0); cin.tie(0);
+	cin >> N >> M >> K;
+	for (int i = 1; i <= N; ++i)
+		for (int j = 1; j <= M; ++j)
+			cin >> map[i][j];
+	start();
+}
